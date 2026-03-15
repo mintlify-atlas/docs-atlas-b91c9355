@@ -1,0 +1,94 @@
+{
+  "projectType": "api-service",
+  "projectName": "Personal Finance API",
+  "projectDescription": "A REST API built with Node.js and Express for managing income and expenses, organizing transactions, and generating financial statistics including balance, monthly summaries, and top spending categories.",
+  "theme": "sequoia",
+  "primaryColor": "#10B981",
+  "lightColor": "#D1FAE5",
+  "darkColor": "#065F46",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart", "authentication"]
+          },
+          {
+            "group": "Guides",
+            "pages": ["guides/transactions", "guides/statistics", "guides/categories", "guides/filtering"]
+          },
+          {
+            "group": "Data Model",
+            "pages": ["data-model/transaction", "data-model/category"]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Transactions",
+            "pages": [
+              "api-reference/transactions/list",
+              "api-reference/transactions/create",
+              "api-reference/transactions/get",
+              "api-reference/transactions/update",
+              "api-reference/transactions/delete",
+              "api-reference/transactions/years"
+            ]
+          },
+          {
+            "group": "Statistics",
+            "pages": [
+              "api-reference/stats/balance",
+              "api-reference/stats/by-category",
+              "api-reference/stats/monthly",
+              "api-reference/stats/top-categories"
+            ]
+          },
+          {
+            "group": "Categories",
+            "pages": [
+              "api-reference/categories/list",
+              "api-reference/categories/get",
+              "api-reference/categories/create",
+              "api-reference/categories/update",
+              "api-reference/categories/delete"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Create, read, update, and delete financial transactions (income and expenses)",
+    "Filter transactions by type, category, month, and year",
+    "General balance calculation (total income, total expenses, net balance)",
+    "Spending summary grouped by category with percentage breakdown",
+    "Monthly summary with month-over-month comparison and percentage change",
+    "Top 5 spending categories ranked by total amount",
+    "Retrieve all available transaction years",
+    "Predefined and custom categories (food, transport, entertainment, utilities, health, shopping, salary, other)",
+    "Input validation via Zod schemas",
+    "CORS support with configurable origins"
+  ],
+  "publicApiSurface": [
+    "GET /api/transactions",
+    "POST /api/transactions",
+    "GET /api/transactions/:id",
+    "PATCH /api/transactions/:id",
+    "DELETE /api/transactions/:id",
+    "GET /api/transactions/years",
+    "GET /api/stats/balance",
+    "GET /api/stats/by-category",
+    "GET /api/stats/monthly",
+    "GET /api/stats/top-categories",
+    "GET /api/categories",
+    "GET /api/categories/:id",
+    "POST /api/categories",
+    "PUT /api/categories/:id",
+    "DELETE /api/categories/:id"
+  ]
+}
