@@ -1,0 +1,117 @@
+---
+title: "Statistics"
+description: "Use the stats endpoints to calculate balances, category breakdowns, monthly comparisons, and top spending categories."
+---
+
+The `/api/stats` endpoints aggregate your transaction data into summary figures. All four endpoints accept optional `month` and `year` query parameters to scope the results to a specific period.
+
+<Note>
+  `month` is 1-indexed: January = `1`, December = `12`. If you omit `month` or `year`, the server returns aggregates across all available data.
+</Note>
+
+## Balance summary
+
+`GET /api/stats/balance` returns the total income, total expenses, and net balance for the given period.
+
+```bash
+curl "http://localhost:3000/api/stats/balance?month=1&year=2024"
+```
+
+```json
+{
+  "income": 3500,
+  "expense": 450,
+  "balance": 3050
+}
+```
+
+`balance` is `income` minus `expense`. A positive value means you earned more than you spent.
+
+## Spending by category
+
+`GET /api/stats/by-category` returns an array showing how much was spent (or earned) in each category during the period.
+
+```bash
+curl "http://localhost:3000/api/stats/by-category?month=1&year=2024"
+```
+
+```json
+[
+  { "name": "salary", "value": 3500 },
+  { "name": "food", "value": 210 },
+  { "name": "transport", "value": 120 },
+  { "name": "utilities", "value": 120 }
+]
+```
+
+Each object contains the category `name` and its aggregated `value`.
+
+## Monthly comparison
+
+`GET /api/stats/monthly` compares the current month's figures against the previous month and calculates the percentage change.
+
+```bash
+curl "http://localhost:3000/api/stats/monthly?month=2&year=2024"
+```
+
+```json
+{
+  "transactionsAmount": {
+    "current": {
+      "expense": 380,
+      "income": 3500,
+      "balance": 3120
+    },
+    "previous": {
+      "expense": 450,
+      "income": 3500,
+      "balance": 3050
+    }
+  },
+  "change": {
+    "expense": -15.56,
+    "income": 0,
+    "balance": 2.3
+  }
+}
+```
+
+### Interpreting the response
+
+- `transactionsAmount.current` — totals for the requested month.
+- `transactionsAmount.previous` — totals for the month immediately before.
+- `change` — percentage difference between current and previous. A negative value means the figure decreased. A value of `null` means the previous period had no data to compare against.
+
+<Tip>
+  Use `change.expense` to spot months where spending increased sharply compared to the prior month.
+</Tip>
+
+## Top categories
+
+`GET /api/stats/top-categories` returns the five categories with the highest total value for the period, sorted descending.
+
+```bash
+curl "http://localhost:3000/api/stats/top-categories?month=1&year=2024"
+```
+
+```json
+[
+  { "name": "salary", "value": 3500 },
+  { "name": "food", "value": 210 },
+  { "name": "transport", "value": 120 },
+  { "name": "utilities", "value": 120 },
+  { "name": "health", "value": 60 }
+]
+```
+
+The response is capped at five entries and is always sorted by `value` descending.
+
+## Query parameter reference
+
+<ParamField query="month" type="number">
+  Calendar month as an integer from `1` (January) to `12` (December). Must be a valid month number; the server returns `400` if this constraint is violated.
+</ParamField>
+
+<ParamField query="year" type="number">
+  Four-digit calendar year. Must be within the range of years present in your transaction data.
+</ParamField>

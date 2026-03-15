@@ -1,0 +1,73 @@
+---
+title: "Get a transaction"
+description: "Retrieve a single transaction by its UUID."
+---
+
+Returns the transaction matching the given `id`.
+
+```bash
+GET /api/transactions/:id
+```
+
+## Request
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  The UUID of the transaction to retrieve.
+</ParamField>
+
+## Response
+
+Returns `200 OK` with the transaction object.
+
+<ResponseField name="id" type="string">
+  Unique transaction identifier (UUID).
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  Transaction type: `income` or `expense`.
+</ResponseField>
+
+<ResponseField name="amount" type="number">
+  Transaction amount.
+</ResponseField>
+
+<ResponseField name="category" type="string">
+  Category name.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Human-readable description of the transaction.
+</ResponseField>
+
+<ResponseField name="date" type="string">
+  Transaction date in `YYYY-MM-DD` format.
+</ResponseField>
+
+## Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| `404` | `{ "error": "Transaction not found" }` | No transaction exists with the given `id`. |
+
+## Example
+
+<CodeGroup>
+
+```bash Request
+curl http://localhost:3000/api/transactions/a1f00101-aaaa-4a11-b111-000000000001
+```
+
+```json Response
+{
+  "id": "a1f00101-aaaa-4a11-b111-000000000001",
+  "type": "income",
+  "amount": 3500,
+  "category": "salary",
+  "description": "Monthly salary payment",
+  "date": "2024-01-05"
+}
+```
+
+</CodeGroup>

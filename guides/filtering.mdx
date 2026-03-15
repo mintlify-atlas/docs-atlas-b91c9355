@@ -1,0 +1,101 @@
+---
+title: "Filtering transactions"
+description: "Filter transactions by type, category, month, and year using query parameters on GET /api/transactions."
+---
+
+The `GET /api/transactions` endpoint accepts four query parameters that let you narrow results. You can use any combination of them. Results are always returned sorted by date descending.
+
+## Available filters
+
+<ParamField query="type" type="string">
+  Filter by transaction direction. Accepted values: `income`, `expense`. Returns `404` if the value is not one of these.
+</ParamField>
+
+<ParamField query="category" type="string">
+  Filter by category name (e.g. `food`, `salary`). Must be a valid category name. Returns `404` if the category does not exist.
+</ParamField>
+
+<ParamField query="month" type="number">
+  Filter by calendar month. Use integers `1`–`12` where `1` = January and `12` = December. Returns `400` if the value is outside this range or is not a number.
+</ParamField>
+
+<ParamField query="year" type="number">
+  Filter by calendar year. Must be within the range of years present in your transaction data.
+</ParamField>
+
+## Filter by type
+
+Return only income transactions:
+
+```bash
+curl "http://localhost:3000/api/transactions?type=income"
+```
+
+Return only expense transactions:
+
+```bash
+curl "http://localhost:3000/api/transactions?type=expense"
+```
+
+## Filter by category
+
+Return all transactions in the `food` category:
+
+```bash
+curl "http://localhost:3000/api/transactions?category=food"
+```
+
+## Filter by month and year
+
+Return all transactions from January 2024:
+
+```bash
+curl "http://localhost:3000/api/transactions?month=1&year=2024"
+```
+
+<Note>
+  `month` is 1-indexed. January is `1`, not `0`. Passing `0` or `13` will return a `400` error.
+</Note>
+
+Return all transactions from the full year 2024 (omit `month`):
+
+```bash
+curl "http://localhost:3000/api/transactions?year=2024"
+```
+
+## Combine filters
+
+Filters are additive — every filter you add further narrows the results.
+
+Return all expense transactions in the `food` category from March 2024:
+
+```bash
+curl "http://localhost:3000/api/transactions?type=expense&category=food&month=3&year=2024"
+```
+
+Return all income transactions from 2024:
+
+```bash
+curl "http://localhost:3000/api/transactions?type=income&year=2024"
+```
+
+Return all `transport` expenses in the second half of 2024 (run two requests and merge client-side):
+
+```bash
+curl "http://localhost:3000/api/transactions?type=expense&category=transport&month=7&year=2024"
+curl "http://localhost:3000/api/transactions?type=expense&category=transport&month=8&year=2024"
+# ... repeat for months 9–12
+```
+
+<Tip>
+  The API does not support a date-range parameter. To aggregate across multiple months, call the endpoint once per month and combine the results in your application.
+</Tip>
+
+## Error responses
+
+| Condition | Status |
+|---|---|
+| `type` is not `income` or `expense` | `404` |
+| `category` is not a known category name | `404` |
+| `month` is not a number between 1 and 12 | `400` |
+| `year` is outside the range of existing data | varies |

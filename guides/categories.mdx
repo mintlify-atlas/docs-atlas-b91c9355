@@ -1,0 +1,96 @@
+---
+title: "Categories"
+description: "List, create, rename, and delete the categories used to classify transactions."
+---
+
+Categories classify each transaction. The API ships with eight built-in categories and lets you create custom ones.
+
+**Built-in categories:** `food`, `transport`, `entertainment`, `utilities`, `health`, `shopping`, `salary`, `other`
+
+## List all categories
+
+```bash
+curl http://localhost:3000/api/categories
+```
+
+```json
+[
+  { "id": "1", "name": "food" },
+  { "id": "2", "name": "transport" },
+  { "id": "3", "name": "entertainment" },
+  { "id": "4", "name": "utilities" },
+  { "id": "5", "name": "health" },
+  { "id": "6", "name": "shopping" },
+  { "id": "7", "name": "salary" },
+  { "id": "8", "name": "other" }
+]
+```
+
+## Get a single category
+
+```bash
+curl http://localhost:3000/api/categories/1
+```
+
+```json
+{ "id": "1", "name": "food" }
+```
+
+If the ID does not exist, the server returns `404`.
+
+## Create a custom category
+
+Send a `POST` request with a `name` field:
+
+```bash
+curl -X POST http://localhost:3000/api/categories \
+  -H "Content-Type: application/json" \
+  -d '{"name": "freelance"}'
+```
+
+```json
+{
+  "data": {
+    "id": "c3d44303-cccc-4c33-d333-000000000003",
+    "name": "freelance"
+  }
+}
+```
+
+The new category is immediately available to use in transactions. If a category with the same name already exists, the server returns `409 Conflict`.
+
+<Note>
+  Category names are stored and matched in lowercase. Submit `"freelance"`, not `"Freelance"`.
+</Note>
+
+## Rename a category
+
+Use `PUT` to change a category's name:
+
+```bash
+curl -X PUT http://localhost:3000/api/categories/c3d44303-cccc-4c33-d333-000000000003 \
+  -H "Content-Type: application/json" \
+  -d '{"name": "freelance-work"}'
+```
+
+```json
+{ "id": "c3d44303-cccc-4c33-d333-000000000003", "name": "freelance-work" }
+```
+
+<Warning>
+  Renaming a category updates its name on every existing transaction that uses it. This change is immediate and cannot be undone.
+</Warning>
+
+If the ID does not exist, the server returns `404`.
+
+## Delete a category
+
+```bash
+curl -X DELETE http://localhost:3000/api/categories/c3d44303-cccc-4c33-d333-000000000003
+```
+
+A successful deletion returns `200`.
+
+<Warning>
+  You cannot delete a category that is currently in use by one or more transactions. The server returns `409 Conflict` in that case. Delete or reassign the transactions first.
+</Warning>

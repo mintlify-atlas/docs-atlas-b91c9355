@@ -1,0 +1,142 @@
+---
+title: "Transactions"
+description: "Create, retrieve, update, and delete transactions using the Personal Finance API."
+---
+
+Transactions are the core resource of the API. Each transaction records a single financial event — either income or an expense — along with its amount, category, date, and description.
+
+## List all transactions
+
+Fetch every transaction sorted by date descending:
+
+```bash
+curl http://localhost:3000/api/transactions
+```
+
+```json
+[
+  {
+    "id": "a1f00101-aaaa-4a11-b111-000000000001",
+    "type": "income",
+    "amount": 3500,
+    "category": "salary",
+    "description": "Monthly salary payment",
+    "date": "2024-01-05"
+  }
+]
+```
+
+You can narrow results with query parameters. See the [filtering guide](/guides/filtering) for all options.
+
+## Get a single transaction
+
+Retrieve one transaction by its UUID:
+
+```bash
+curl http://localhost:3000/api/transactions/a1f00101-aaaa-4a11-b111-000000000001
+```
+
+```json
+{
+  "id": "a1f00101-aaaa-4a11-b111-000000000001",
+  "type": "income",
+  "amount": 3500,
+  "category": "salary",
+  "description": "Monthly salary payment",
+  "date": "2024-01-05"
+}
+```
+
+If the ID does not exist, the server returns `404`.
+
+## Create a transaction
+
+Send a `POST` request with a JSON body. All fields are required.
+
+### Request body fields
+
+<ParamField body="type" type="string" required>
+  Transaction direction. Must be `"income"` or `"expense"`.
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Positive number representing the transaction value. Minimum: `1`.
+</ParamField>
+
+<ParamField body="category" type="string" required>
+  One of the valid category names: `food`, `transport`, `entertainment`, `utilities`, `health`, `shopping`, `salary`, `other`.
+</ParamField>
+
+<ParamField body="description" type="string" required>
+  Free-text description of the transaction.
+</ParamField>
+
+<ParamField body="date" type="string">
+  ISO date string (e.g. `"2024-03-15"`). Defaults to today's date if omitted.
+</ParamField>
+
+```bash
+curl -X POST http://localhost:3000/api/transactions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "expense",
+    "amount": 45,
+    "category": "food",
+    "description": "Grocery run",
+    "date": "2024-01-10"
+  }'
+```
+
+```json
+{
+  "id": "b2e11202-bbbb-4b22-c222-000000000002",
+  "type": "expense",
+  "amount": 45,
+  "category": "food",
+  "description": "Grocery run",
+  "date": "2024-01-10"
+}
+```
+
+The server generates a UUID automatically and assigns `date` to today if you do not include it.
+
+## Update a transaction
+
+Use `PATCH` to partially update an existing transaction. Send only the fields you want to change:
+
+```bash
+curl -X PATCH http://localhost:3000/api/transactions/b2e11202-bbbb-4b22-c222-000000000002 \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 52, "description": "Grocery run + extras"}'
+```
+
+```json
+{
+  "id": "b2e11202-bbbb-4b22-c222-000000000002",
+  "type": "expense",
+  "amount": 52,
+  "category": "food",
+  "description": "Grocery run + extras",
+  "date": "2024-01-10"
+}
+```
+
+If the ID does not exist, the server returns `false` and a non-2xx status.
+
+## Delete a transaction
+
+Send a `DELETE` request with the transaction ID:
+
+```bash
+curl -X DELETE http://localhost:3000/api/transactions/b2e11202-bbbb-4b22-c222-000000000002
+```
+
+A successful deletion returns `200`. If the ID is not found, the server returns `404`.
+
+## Validation errors
+
+The API validates `type` and `category` values against known lists. Passing an invalid value returns `404`. Passing an amount below `1` returns a validation error.
+
+<Note>
+  Category names are lowercase strings. Sending `"Food"` instead of `"food"` will fail validation.
+</Note>

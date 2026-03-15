@@ -1,0 +1,40 @@
+---
+title: "List transaction years"
+description: "Retrieve all distinct years that appear in your transaction data, sorted in descending order."
+---
+
+Returns an array of distinct years from all transactions, sorted descending.
+
+```bash
+GET /api/transactions/years
+```
+
+## Request
+
+This endpoint takes no parameters.
+
+## Response
+
+Returns `200 OK` with an array of numbers.
+
+<ResponseField name="[]" type="number[]">
+  Array of years (integers) present in your transaction data, sorted in descending order.
+</ResponseField>
+
+<Note>
+  If you have no transactions, the response will be an empty array `[]`.
+</Note>
+
+## Example
+
+<CodeGroup>
+
+```bash Request
+curl http://localhost:3000/api/transactions/years
+```
+
+```json Response
+[2025, 2024, 2023]
+```
+
+</CodeGroup>

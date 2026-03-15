@@ -1,0 +1,111 @@
+---
+title: "Get monthly summary"
+description: "Returns a summary of income, expenses, and balance with optional month-over-month comparison."
+---
+
+Returns aggregated transaction totals for the specified period and, when both `month` and `year` are provided, a comparison against the previous period.
+
+```bash
+GET /api/stats/monthly
+```
+
+<Tip>Provide both `month` and `year` to receive a month-over-month comparison. If you supply only one parameter (or neither), the `previous` period values and `change` percentages will be `null`.</Tip>
+
+## Request
+
+### Query parameters
+
+<ParamField query="month" type="number">
+  Month to filter by. Must be an integer between 1 and 12.
+</ParamField>
+
+<ParamField query="year" type="number">
+  Year to filter by. Must be within the range of years present in your transaction data.
+</ParamField>
+
+## Response
+
+<ResponseField name="transactionsAmount" type="object">
+  Aggregated totals for the current and previous periods.
+  <Expandable title="properties">
+    <ResponseField name="current" type="object">
+      Totals for the requested period.
+      <Expandable title="properties">
+        <ResponseField name="expense" type="number">
+          Total expenses in the current period.
+        </ResponseField>
+        <ResponseField name="income" type="number">
+          Total income in the current period.
+        </ResponseField>
+        <ResponseField name="balance" type="number">
+          Net balance (`income - expense`) for the current period.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="previous" type="object | null">
+      Totals for the period immediately before the requested one. `null` when only one of `month` or `year` is provided, or when neither is provided.
+      <Expandable title="properties">
+        <ResponseField name="expense" type="number">
+          Total expenses in the previous period.
+        </ResponseField>
+        <ResponseField name="income" type="number">
+          Total income in the previous period.
+        </ResponseField>
+        <ResponseField name="balance" type="number">
+          Net balance for the previous period.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="change" type="object">
+  Percentage change between the current and previous periods. Each field is a number (positive = increase, negative = decrease) or `null` if the previous period has no data or had a value of zero.
+  <Expandable title="properties">
+    <ResponseField name="expense" type="number | null">
+      Percentage change in expenses.
+    </ResponseField>
+    <ResponseField name="income" type="number | null">
+      Percentage change in income.
+    </ResponseField>
+    <ResponseField name="balance" type="number | null">
+      Percentage change in net balance.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Errors
+
+| Status | Error message | Cause |
+|--------|---------------|-------|
+| 400 | `The month must be a number` | `month` query param is not a valid number |
+| 404 | `Invalid month. Range: 1–12` | `month` is a number but outside the 1–12 range |
+| 400 | `Invalid year. Available range: <min>–<max>` | `year` is outside the range of years in your data |
+
+## Example
+
+```bash
+curl http://localhost:3000/api/stats/monthly?month=3&year=2024
+```
+
+```json
+{
+  "transactionsAmount": {
+    "current": {
+      "expense": 965,
+      "income": 3500,
+      "balance": 2535
+    },
+    "previous": {
+      "expense": 820,
+      "income": 3200,
+      "balance": 2380
+    }
+  },
+  "change": {
+    "expense": 17.68,
+    "income": 9.38,
+    "balance": 6.51
+  }
+}
+```

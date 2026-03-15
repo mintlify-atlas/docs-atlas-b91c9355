@@ -1,0 +1,60 @@
+---
+title: "Create a category"
+description: "Creates a new transaction category."
+---
+
+Creates a new category that can be assigned to transactions.
+
+```bash
+POST /api/categories
+```
+
+<Note>Category names are stored in lowercase regardless of the casing you provide in the request.</Note>
+
+## Request
+
+### Body parameters
+
+<ParamField body="name" type="string" required>
+  Name for the new category. Must be a non-empty string. Stored as lowercase.
+</ParamField>
+
+## Response
+
+Returns `201 Created` with the newly created category wrapped in a `data` object.
+
+<ResponseField name="data" type="object">
+  The created category.
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">
+      Unique identifier for the new category.
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      The category name in lowercase.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Errors
+
+| Status | Error message | Cause |
+|--------|---------------|-------|
+| 400 | Validation error details | Request body failed schema validation |
+| 409 | `The category already exists` | A category with this name already exists |
+
+## Example
+
+```bash
+curl -X POST http://localhost:3000/api/categories \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Groceries"}'
+```
+
+```json
+{
+  "data": {
+    "id": "9",
+    "name": "groceries"
+  }
+}
+```

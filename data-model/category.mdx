@@ -1,0 +1,53 @@
+---
+title: "Category"
+description: "The Category object represents a label used to classify transactions."
+---
+
+## The Category object
+
+```json
+{ "id": "1", "name": "food" }
+```
+
+## Fields
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for the category. For built-in categories this is a short numeric string (`"1"` through `"8"`). For custom categories created via the API this is a UUID v4 string.
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  The category label in lowercase. This value is used as the `category` field on Transaction objects.
+</ResponseField>
+
+## Built-in categories
+
+The API ships with eight categories that cannot be deleted (they can be renamed).
+
+| ID | Name | Typical use |
+|---|---|---|
+| `1` | `food` | Groceries, restaurants, takeaway. |
+| `2` | `transport` | Fuel, public transit, ride-sharing. |
+| `3` | `entertainment` | Streaming, events, hobbies. |
+| `4` | `utilities` | Electricity, water, internet, phone. |
+| `5` | `health` | Medical bills, pharmacy, gym. |
+| `6` | `shopping` | Clothing, electronics, general retail. |
+| `7` | `salary` | Employment income, wages. |
+| `8` | `other` | Anything that does not fit another category. |
+
+## Custom categories
+
+You can add your own categories using `POST /api/categories`. Custom categories behave identically to built-in ones and can be used in the `category` field of any transaction.
+
+<Warning>
+  You cannot delete a category that is assigned to one or more transactions. Reassign or delete those transactions first.
+</Warning>
+
+## Related endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/categories` | List all categories. |
+| `GET` | `/api/categories/:id` | Get a single category by ID. |
+| `POST` | `/api/categories` | Create a custom category. |
+| `PUT` | `/api/categories/:id` | Rename a category. |
+| `DELETE` | `/api/categories/:id` | Delete a category (fails if in use). |

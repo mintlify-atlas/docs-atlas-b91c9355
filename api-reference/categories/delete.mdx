@@ -1,0 +1,47 @@
+---
+title: "Delete a category"
+description: "Deletes a category that is not assigned to any transactions."
+---
+
+Deletes the category with the given ID.
+
+```bash
+DELETE /api/categories/:id
+```
+
+<Warning>You cannot delete a category that is currently assigned to one or more transactions. Remove or reassign those transactions before deleting the category.</Warning>
+
+## Request
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  The ID of the category to delete.
+</ParamField>
+
+## Response
+
+Returns a confirmation message on success.
+
+<ResponseField name="message" type="string">
+  Confirmation string: `"Category deleted successfully"`.
+</ResponseField>
+
+## Errors
+
+| Status | Error message | Cause |
+|--------|---------------|-------|
+| 404 | `Category not found` | No category exists with the given ID |
+| 409 | `Cannot delete category. It is currently in use by existing transactions` | One or more transactions are assigned to this category |
+
+## Example
+
+```bash
+curl -X DELETE http://localhost:3000/api/categories/9
+```
+
+```json
+{
+  "message": "Category deleted successfully"
+}
+```

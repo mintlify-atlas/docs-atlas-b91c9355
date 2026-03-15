@@ -1,0 +1,97 @@
+---
+title: "Create a transaction"
+description: "Create a new transaction record with type, amount, category, and description."
+---
+
+Creates a new transaction and returns the saved record with an auto-generated UUID.
+
+```bash
+POST /api/transactions
+```
+
+## Request
+
+### Body parameters
+
+<ParamField body="type" type="string" required>
+  Transaction type. Must be `income` or `expense`.
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Transaction amount. Must be at least `1`.
+</ParamField>
+
+<ParamField body="category" type="string" required>
+  Category name. Must be one of: `food`, `transport`, `entertainment`, `utilities`, `health`, `shopping`, `salary`, `other`.
+</ParamField>
+
+<ParamField body="description" type="string" required>
+  Human-readable description of the transaction.
+</ParamField>
+
+<ParamField body="date" type="string">
+  Transaction date in `YYYY-MM-DD` format. Defaults to today's date if omitted.
+</ParamField>
+
+## Response
+
+Returns `201 Created` with the newly created transaction object.
+
+<ResponseField name="id" type="string">
+  Auto-generated UUID for the new transaction.
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  Transaction type: `income` or `expense`.
+</ResponseField>
+
+<ResponseField name="amount" type="number">
+  Transaction amount.
+</ResponseField>
+
+<ResponseField name="category" type="string">
+  Category name.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Transaction description.
+</ResponseField>
+
+<ResponseField name="date" type="string">
+  Transaction date in `YYYY-MM-DD` format.
+</ResponseField>
+
+## Errors
+
+| Status | Cause |
+|--------|-------|
+| `400` | Zod validation failed. Returned when `type` is invalid, `amount` is less than `1`, `category` is not a valid name, or a required field is missing. |
+
+## Example
+
+<CodeGroup>
+
+```bash Request
+curl -X POST http://localhost:3000/api/transactions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "expense",
+    "amount": 85,
+    "category": "food",
+    "description": "Dinner at restaurant",
+    "date": "2024-03-10"
+  }'
+```
+
+```json Response
+{
+  "id": "b2e11202-bbbb-4b22-c222-000000000004",
+  "type": "expense",
+  "amount": 85,
+  "category": "food",
+  "description": "Dinner at restaurant",
+  "date": "2024-03-10"
+}
+```
+
+</CodeGroup>

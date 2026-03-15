@@ -1,0 +1,52 @@
+---
+title: "Delete a transaction"
+description: "Permanently delete a transaction by its UUID."
+---
+
+Deletes the transaction matching the given `id`.
+
+```bash
+DELETE /api/transactions/:id
+```
+
+## Request
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  The UUID of the transaction to delete.
+</ParamField>
+
+## Response
+
+Returns `200 OK` on success.
+
+<ResponseField name="error" type="string">
+  Confirmation message. Value is always `"Transaction deleted done"`.
+</ResponseField>
+
+<Warning>
+  The success response uses the `"error"` key even when the operation succeeds. This is a quirk of the current implementation.
+</Warning>
+
+## Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| `404` | `{ "error": "Transaction not found" }` | No transaction exists with the given `id`. |
+
+## Example
+
+<CodeGroup>
+
+```bash Request
+curl -X DELETE http://localhost:3000/api/transactions/a1f00101-aaaa-4a11-b111-000000000001
+```
+
+```json Response
+{
+  "error": "Transaction deleted done"
+}
+```
+
+</CodeGroup>

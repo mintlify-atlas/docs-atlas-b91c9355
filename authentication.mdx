@@ -1,0 +1,55 @@
+---
+title: "Authentication"
+description: "The Personal Finance API has no authentication. All endpoints are publicly accessible. Learn how to configure CORS for your frontend."
+---
+
+## No authentication required
+
+This API does not use API keys, tokens, or any other authentication mechanism. Every endpoint is open and accessible to any HTTP client that can reach the server.
+
+<Warning>
+  Because there is no authentication, you should not expose this API on a public network or the internet in production. Run it on `localhost` or behind a private network boundary.
+</Warning>
+
+## CORS configuration
+
+The API uses the `cors` package to control which browser origins are allowed to make requests. You configure allowed origins through the `CORS_ORIGIN` environment variable.
+
+The following HTTP methods are permitted: `GET`, `POST`, `PATCH`, `DELETE`, `PUT`.
+
+Credentials (cookies, authorization headers) are supported.
+
+### Single origin
+
+To allow one frontend origin, set `CORS_ORIGIN` to that origin's URL:
+
+```bash .env
+PORT=3000
+CORS_ORIGIN=http://localhost:5173
+```
+
+### Multiple origins
+
+To allow more than one origin, provide a comma-separated list with no spaces:
+
+```bash .env
+PORT=3000
+CORS_ORIGIN=http://localhost:5173,http://localhost:3001,https://myapp.example.com
+```
+
+The server splits the string on commas and passes the resulting array to the CORS middleware.
+
+<Tip>
+  If you are developing a frontend app with Vite, the default dev server runs on `http://localhost:5173`. For Create React App, use `http://localhost:3000` (and set `PORT` to a different value for the API).
+</Tip>
+
+## Environment variable reference
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `PORT` | No | `3000` | Port the HTTP server listens on. |
+| `CORS_ORIGIN` | Yes | — | Comma-separated list of allowed browser origins. |
+
+<Note>
+  The server will throw an error on startup if `CORS_ORIGIN` is not set, because the CORS middleware reads it immediately.
+</Note>

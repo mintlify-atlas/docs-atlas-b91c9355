@@ -1,0 +1,56 @@
+---
+title: "Transaction"
+description: "The Transaction object represents a single financial event, either income or an expense."
+---
+
+## The Transaction object
+
+```json
+{
+  "id": "a1f00101-aaaa-4a11-b111-000000000001",
+  "type": "income",
+  "amount": 3500,
+  "category": "salary",
+  "description": "Monthly salary payment",
+  "date": "2024-01-05"
+}
+```
+
+## Fields
+
+<ResponseField name="id" type="string" required>
+  UUID v4 string. Generated automatically by the server when you create a transaction. Example: `"a1f00101-aaaa-4a11-b111-000000000001"`.
+</ResponseField>
+
+<ResponseField name="type" type="string" required>
+  Indicates whether the transaction is money coming in or going out. Possible values:
+
+  - `"income"` — money received (e.g. salary, freelance payment)
+  - `"expense"` — money spent (e.g. groceries, utilities)
+</ResponseField>
+
+<ResponseField name="amount" type="number" required>
+  The transaction value as a positive number. Minimum value: `1`. Represents the currency amount without a unit (your application determines the currency).
+</ResponseField>
+
+<ResponseField name="category" type="string" required>
+  The category this transaction belongs to. Must be one of the valid category names. Built-in values: `food`, `transport`, `entertainment`, `utilities`, `health`, `shopping`, `salary`, `other`. Custom categories created via the categories API are also valid.
+</ResponseField>
+
+<ResponseField name="description" type="string" required>
+  A free-text label describing the transaction. No length constraints are enforced by the schema.
+</ResponseField>
+
+<ResponseField name="date" type="string" required>
+  ISO 8601 date string in `YYYY-MM-DD` format. Example: `"2024-01-05"`. When you create a transaction without supplying this field, the server defaults it to today's date.
+</ResponseField>
+
+## Related endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/transactions` | List all transactions, with optional filters. |
+| `GET` | `/api/transactions/:id` | Get a single transaction by ID. |
+| `POST` | `/api/transactions` | Create a new transaction. |
+| `PATCH` | `/api/transactions/:id` | Partially update a transaction. |
+| `DELETE` | `/api/transactions/:id` | Delete a transaction. |

@@ -1,0 +1,98 @@
+---
+title: "List transactions"
+description: "Retrieve a list of all transactions, with optional filters for type, category, month, and year."
+---
+
+Returns an array of transaction objects sorted by date descending.
+
+```bash
+GET /api/transactions
+```
+
+## Request
+
+### Query parameters
+
+<ParamField query="type" type="string">
+  Filter by transaction type. Must be `income` or `expense`.
+</ParamField>
+
+<ParamField query="category" type="string">
+  Filter by category name. Must be one of: `food`, `transport`, `entertainment`, `utilities`, `health`, `shopping`, `salary`, `other`.
+</ParamField>
+
+<ParamField query="month" type="number">
+  Filter by month. Must be an integer between `1` and `12`.
+</ParamField>
+
+<ParamField query="year" type="number">
+  Filter by year. Must be within the range of years present in your transaction data.
+</ParamField>
+
+## Response
+
+Returns an array of transaction objects sorted by date descending.
+
+<ResponseField name="[]" type="object[]">
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">
+      Unique transaction identifier (UUID).
+    </ResponseField>
+    <ResponseField name="type" type="string">
+      Transaction type: `income` or `expense`.
+    </ResponseField>
+    <ResponseField name="amount" type="number">
+      Transaction amount. Minimum value is `1`.
+    </ResponseField>
+    <ResponseField name="category" type="string">
+      Category name (e.g., `salary`, `food`).
+    </ResponseField>
+    <ResponseField name="description" type="string">
+      Human-readable description of the transaction.
+    </ResponseField>
+    <ResponseField name="date" type="string">
+      Transaction date in `YYYY-MM-DD` format.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| `404` | `{ "error": "Type not found" }` | `type` query param is not `income` or `expense`. |
+| `404` | `{ "error": "Category not found" }` | `category` query param is not a valid category name. |
+| `400` | `{ "error": "The month must be a number" }` | `month` query param is not a number. |
+| `404` | `{ "error": "Invalid month. Range: 1–12" }` | `month` query param is outside the 1–12 range. |
+| `400` | `{ "error": "Invalid year. Available range: <min>–<max>" }` | `year` query param is outside the range of years in your data. |
+
+## Example
+
+<CodeGroup>
+
+```bash Request
+curl http://localhost:3000/api/transactions?type=expense&month=1&year=2024
+```
+
+```json Response
+[
+  {
+    "id": "a1f00101-aaaa-4a11-b111-000000000002",
+    "type": "expense",
+    "amount": 120,
+    "category": "food",
+    "description": "Grocery shopping",
+    "date": "2024-01-20"
+  },
+  {
+    "id": "a1f00101-aaaa-4a11-b111-000000000003",
+    "type": "expense",
+    "amount": 45,
+    "category": "transport",
+    "description": "Monthly bus pass",
+    "date": "2024-01-05"
+  }
+]
+```
+
+</CodeGroup>

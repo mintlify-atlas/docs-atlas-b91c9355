@@ -1,0 +1,47 @@
+---
+title: "Get a category"
+description: "Returns a single category by its ID."
+---
+
+Returns the category matching the provided ID.
+
+```bash
+GET /api/categories/:id
+```
+
+## Request
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  The ID of the category to retrieve.
+</ParamField>
+
+## Response
+
+<ResponseField name="id" type="string">
+  Unique identifier for the category.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Category name, stored in lowercase.
+</ResponseField>
+
+## Errors
+
+| Status | Error message | Cause |
+|--------|---------------|-------|
+| 404 | `Category not found` | No category exists with the given ID |
+
+## Example
+
+```bash
+curl http://localhost:3000/api/categories/3
+```
+
+```json
+{
+  "id": "3",
+  "name": "entertainment"
+}
+```

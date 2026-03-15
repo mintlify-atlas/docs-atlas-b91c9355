@@ -1,0 +1,60 @@
+---
+title: "Update a category"
+description: "Updates the name of an existing category."
+---
+
+Updates the name of the category with the given ID.
+
+```bash
+PUT /api/categories/:id
+```
+
+<Warning>Renaming a category cascades to all existing transactions that use it. Every transaction previously assigned to this category will be updated to reflect the new name.</Warning>
+
+## Request
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  The ID of the category to update.
+</ParamField>
+
+### Body parameters
+
+<ParamField body="name" type="string" required>
+  The new name for the category.
+</ParamField>
+
+## Response
+
+Returns the updated category on success.
+
+<ResponseField name="id" type="string">
+  Unique identifier for the category.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  The updated category name.
+</ResponseField>
+
+## Errors
+
+| Status | Error message | Cause |
+|--------|---------------|-------|
+| 400 | Validation error details | Request body failed schema validation |
+| 404 | `Category not found` | No category exists with the given ID |
+
+## Example
+
+```bash
+curl -X PUT http://localhost:3000/api/categories/3 \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Leisure"}'
+```
+
+```json
+{
+  "id": "3",
+  "name": "leisure"
+}
+```

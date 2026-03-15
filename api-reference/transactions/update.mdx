@@ -1,0 +1,103 @@
+---
+title: "Update a transaction"
+description: "Update one or more fields of an existing transaction by its UUID."
+---
+
+Partially updates the transaction matching the given `id`. You only need to include the fields you want to change.
+
+```bash
+PATCH /api/transactions/:id
+```
+
+## Request
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  The UUID of the transaction to update.
+</ParamField>
+
+### Body parameters
+
+All body fields are optional. Include only the fields you want to update.
+
+<ParamField body="type" type="string">
+  Transaction type. Must be `income` or `expense`.
+</ParamField>
+
+<ParamField body="amount" type="number">
+  Transaction amount. Must be at least `1`.
+</ParamField>
+
+<ParamField body="category" type="string">
+  Category name. Must be one of: `food`, `transport`, `entertainment`, `utilities`, `health`, `shopping`, `salary`, `other`.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Human-readable description of the transaction.
+</ParamField>
+
+<ParamField body="date" type="string">
+  Transaction date in `YYYY-MM-DD` format.
+</ParamField>
+
+## Response
+
+Returns `200 OK` with the fully updated transaction object.
+
+<ResponseField name="id" type="string">
+  Unique transaction identifier (UUID).
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  Transaction type: `income` or `expense`.
+</ResponseField>
+
+<ResponseField name="amount" type="number">
+  Transaction amount.
+</ResponseField>
+
+<ResponseField name="category" type="string">
+  Category name.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Transaction description.
+</ResponseField>
+
+<ResponseField name="date" type="string">
+  Transaction date in `YYYY-MM-DD` format.
+</ResponseField>
+
+## Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| `400` | Zod validation error | A provided field fails validation (e.g., invalid `type`, `amount` below `1`, unknown `category`). |
+| `404` | `{ "error": "Transaction not found" }` | No transaction exists with the given `id`. |
+
+## Example
+
+<CodeGroup>
+
+```bash Request
+curl -X PATCH http://localhost:3000/api/transactions/a1f00101-aaaa-4a11-b111-000000000001 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 4000,
+    "description": "Salary increase effective March"
+  }'
+```
+
+```json Response
+{
+  "id": "a1f00101-aaaa-4a11-b111-000000000001",
+  "type": "income",
+  "amount": 4000,
+  "category": "salary",
+  "description": "Salary increase effective March",
+  "date": "2024-01-05"
+}
+```
+
+</CodeGroup>
